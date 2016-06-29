@@ -1,0 +1,40 @@
+---
+- hosts: blackbox #to define in the ansible.cfg file
+  remote_user: ubuntu
+  tasks:
+    - name: add Golang repository
+      become: yes
+      apt_repository: repo='ppa:ubuntu-lxc/lxd-stable'
+
+    - name: update apt
+      become: yes
+      apt: update_cache=yes
+
+    - name: install the relevant packages
+      become: yes
+      apt: pkg={{item}} state=latest update_cache=yes cache_valid_time=3600
+      with_items:
+        - git
+        - golang
+
+    - name: create 'monitoring/src' directory
+      file: path=/home/ubuntu/monitoring/src state=directory
+      tags:
+        - dir_monitoring
+
+    - name: Clone the blackbox_exporter
+      command: git clone https://github.com/prometheus/blackbox_exporter.git
+      args:
+        chdir: /home/ubuntu/monitoring/src
+
+    - name: set GOPATH
+      lineinfile: dest=/home/ubuntu/.profile line="export GOPATH=/home/ubuntu/monitoring"
+
+    - name: add go project binaries to path
+      lineinfile: dest=/home/ubuntu/.profile line="export PATH=$PATH:$GOPATH/bin"
+
+    - name: source profile, get the blackbox_exporter package from github and make
+      shell: source /home/ubuntu/.profile && go get github.com/prometheus/blackbox_exporter && make
+      args:
+        chdir: /home/ubuntu/monitoring/src/blackbox_exporter
+        executable: /bin/bash
