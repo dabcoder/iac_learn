@@ -1,5 +1,6 @@
 ---
 - hosts: myServers
+  remote_user: name_of_remote_user
   become: yes
   tasks:
     - name: Installs Nginx web server
