@@ -1,9 +1,3 @@
 ---
-- name: update apt
-  apt: update_cache=yes
-  
-- name: upgrade apt
-  apt: upgrade=full
-
 - name: install nginx
   apt: name=nginx state=present
