@@ -1,0 +1,16 @@
+---
+- name: configure a webserver
+  hosts: webservers
+  remote_user: myuser
+  become: yes
+
+  roles:
+    - web
+
+- name: configure haproxy
+  hosts: haproxyserver
+  remote_user: myuser
+  become: yes
+
+  roles:
+    - haproxy

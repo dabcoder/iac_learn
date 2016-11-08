@@ -1,0 +1,6 @@
+[webservers]
+ip1
+ip2
+
+[haproxyserver]
+ip3

@@ -1,0 +1,9 @@
+---
+- name: update apt
+  apt: update_cache=yes
+  
+- name: upgrade apt
+  apt: upgrade=full
+
+- name: install haproxy
+  apt: name=haproxy state=present
