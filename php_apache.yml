@@ -1,0 +1,45 @@
+---
+- hosts: apache #On Debian 8
+  remote_user: my_user
+  become: yes
+
+  tasks:
+
+    - name: install aptitude
+      apt: name=aptitude update_cache=yes state=latest
+
+    - name: updates the server
+      apt: update_cache=yes
+    - name: upgrade the server
+      apt: upgrade=full
+
+    - name: install packages
+      apt: name={{ item }} update_cache=yes state=latest
+      with_items:
+        - apache2
+        - php5-common
+        - php5-fpm
+        - php5-cli
+        - php5-mcrypt
+        - mysql-server
+        - php5-mysql
+        - libapache2-mod-php5
+        - git
+        - curl
+        - ufw
+
+    - name: enabled mod_rewrite
+      apache2_module: name=rewrite state=present
+      notify:
+        - restart apache2
+
+    - name: modify cgi.fix_pathinfo option
+      lineinfile: dest=/etc/php5/fpm/php.ini regexp='^;cgi.fix_pathinfo=1' line='cgi.fix_pathinfo=0'
+
+    - name: enable the mcrypt extension
+      command: php5enmod mcrypt
+
+  handlers:
+
+    - name: restart php5fpm
+      service: name=php5-fpm state=restarted
