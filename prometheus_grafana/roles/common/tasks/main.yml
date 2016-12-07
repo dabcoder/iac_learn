@@ -9,4 +9,4 @@
   apt: upgrade=full
 
 - name: create a Downloads directory in the user's home directory
-  file: path=/home/davidbouchare/Downloads state=directory
+  file: path=/home/myuser/Downloads state=directory
