@@ -1,0 +1,10 @@
+---
+- name: Installs Prometheus and Grafana on the server
+  hosts: prom_graf
+  remote_user: myuser
+  become: yes
+
+  roles:
+    - common
+    - prometheus
+    - grafana

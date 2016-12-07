@@ -1,0 +1,12 @@
+---
+- name: install aptitude
+  apt: name=aptitude update_cache=yes state=latest
+
+- name: update apt
+  apt: update_cache=yes
+  
+- name: upgrade apt
+  apt: upgrade=full
+
+- name: create a Downloads directory in the user's home directory
+  file: path=/home/davidbouchare/Downloads state=directory
