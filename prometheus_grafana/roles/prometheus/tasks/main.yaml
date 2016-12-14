@@ -1,0 +1,30 @@
+---
+- name: download Prometheus
+  get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v1.4.1/prometheus-1.4.1.linux-amd64.tar.gz
+    dest: /home/myuser/Downloads 
+    mode: 0755
+
+- name: create a server directory
+  file: path=/home/myuser/Prometheus/server state=directory
+
+- name: unarchive Prometheus
+  unarchive:
+    src: /home/myuser/Downloads/prometheus-1.4.1.linux-amd64.tar.gz
+    dest: /home/myuser/Prometheus/server
+    copy: no
+
+- name: download the node exporter
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v0.13.0/node_exporter-0.13.0.linux-amd64.tar.gz
+    dest: /home/myuser/Downloads 
+    mode: 0755
+
+- name: create a node directory
+  file: path=/home/myuser/Prometheus/node state=directory
+
+- name: unarchive the node_exporter
+  unarchive:
+    src: /home/myuser/Downloads/node_exporter-0.13.0.linux-amd64.tar.gz
+    dest: /home/myuser/Prometheus/node
+    copy: no

@@ -1,0 +1,5 @@
+---
+- name: install Grafana
+  apt: name=grafana update_cache=yes state=latest
+
+  
