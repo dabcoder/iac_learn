@@ -6,7 +6,7 @@ resource "google_compute_instance" "controllers" {
 	can_ip_forward  = true
 
 	disk {
-		image   = "ubuntu-1604-xenial-v20160921"
+		image   = "ubuntu-1604-xenial-v20170307"
 		size    = "200"
 	}
 
@@ -33,7 +33,7 @@ resource "google_compute_instance" "workers" {
   can_ip_forward    = true
 
   	disk {
-		image   = "ubuntu-1604-xenial-v20160921"
+		image   = "ubuntu-1604-xenial-v20170307"
 		size    = "200"
 	}
 

@@ -5,13 +5,13 @@ provider "google" {
 }
 
 resource "google_compute_network" "kubernetes" {
-	name                    = "kubernetes"
+	name                    = "kubernetes-the-hard-way"
 	auto_create_subnetworks = "false"
 }
 
 resource "google_compute_subnetwork" "kubernetes" {
 	name            = "kubernetes"
 	ip_cidr_range   = "10.240.0.0/24"
-	network         = "kubernetes"
+	network         = "kubernetes-the-hard-way"
 	depends_on      = ["google_compute_network.kubernetes"]
 }
