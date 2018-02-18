@@ -5,9 +5,13 @@ resource "google_compute_instance" "controllers" {
     zone            = "${var.region_zone}"
     can_ip_forward  = true
 
-    disk {
-        image   = "ubuntu-1604-xenial-v20170307"
-        size    = "200"
+    tags = ["kubernetes-the-hard-way", "controller"]
+
+    boot_disk {
+        initialize_params {
+            image = "ubuntu-os-cloud/ubuntu-1604-lts"
+            size  = "200"
+        }
     }
 
     network_interface {
@@ -22,19 +26,27 @@ resource "google_compute_instance" "controllers" {
         ssh-keys = "ubuntu:${file("${var.public_key_path}")}"
     }
 
+    service_account {
+        scopes = ["compute-rw", "storage-ro", "service-management", "service-control", "logging-write", "monitoring"]
+    }
+
   depends_on = ["google_compute_subnetwork.kubernetes"]
 }
 
 resource "google_compute_instance" "workers" {
-  count             = 3
-  name              = "worker${count.index}"
-  machine_type      = "n1-standard-1"
-  zone              = "${var.region_zone}"
-  can_ip_forward    = true
+    count             = 3
+    name              = "worker${count.index}"
+    machine_type      = "n1-standard-1"
+    zone              = "${var.region_zone}"
+    can_ip_forward    = true
 
-    disk {
-        image   = "ubuntu-1604-xenial-v20170307"
-        size    = "200"
+    tags = ["kubernetes-the-hard-way", "worker"]
+
+    boot_disk {
+        initialize_params {
+            image = "ubuntu-os-cloud/ubuntu-1604-lts"
+            size  = "200"
+        }
     }
 
     network_interface {
@@ -43,10 +55,29 @@ resource "google_compute_instance" "workers" {
         access_config {
           # Ephemeral external IP
         }
+        alias_ip_range {
+            ip_cidr_range = "10.200.${count.index}.0/24"
+        }
     }
 
     metadata {
         ssh-keys = "ubuntu:${file("${var.public_key_path}")}"
+    }
+
+    service_account {
+        scopes = ["compute-rw", "storage-ro", "service-management", "service-control", "logging-write", "monitoring"]
+    }
+
+    provisioner "file" {
+        source      = "script.sh"
+        destination = "/tmp/script.sh"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/script.sh",
+            "/tmp/script.sh args",
+        ]
     }
 
   depends_on = ["google_compute_subnetwork.kubernetes"]
