@@ -68,17 +68,5 @@ resource "google_compute_instance" "workers" {
         scopes = ["compute-rw", "storage-ro", "service-management", "service-control", "logging-write", "monitoring"]
     }
 
-    provisioner "file" {
-        source      = "script.sh"
-        destination = "/tmp/script.sh"
-    }
-
-    provisioner "remote-exec" {
-        inline = [
-            "chmod +x /tmp/script.sh",
-            "/tmp/script.sh args",
-        ]
-    }
-
   depends_on = ["google_compute_subnetwork.kubernetes"]
 }
